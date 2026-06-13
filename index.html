@@ -8,217 +8,181 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .fade-in { animation: fadeIn 0.3s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        * { pointer-events: auto; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen p-4 md:p-8">
     <div class="max-w-7xl mx-auto space-y-6">
+        
+        <!-- PAINEL DE DEPURAÇÃO E ERROS -->
+        <div id="debugPanel" class="bg-yellow-100 border-2 border-yellow-500 p-4 rounded-lg shadow-md">
+            <h3 class="font-bold text-yellow-900 text-sm mb-1">🔍 STATUS DO SISTEMA</h3>
+            <p id="debugMessage" class="text-yellow-800 text-sm font-mono bg-yellow-50 p-2 rounded">Inicializando...</p>
+        </div>
+
         <!-- Header -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-                <h1 class="text-3xl font-bold text-slate-900">Monitor de Metas de Vendas</h1>
-                <p class="text-slate-500 mt-1">Acompanhe seu progresso, comissões e gere relatórios</p>
+                <h1 class="text-3xl font-bold text-slate-900">Monitor de Metas</h1>
+                <p class="text-xs text-emerald-600 mt-1 font-mono font-bold bg-emerald-100 inline-block px-2 py-1 rounded border border-emerald-300">Versão: FIX-08 (Fuso Horário Local Corrigido)</p>
             </div>
             <div class="flex gap-3">
-                <button type="button" onclick="window.openModal()" class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold py-2 px-4 rounded-lg shadow-sm transition-colors flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    Configurar Meta
+                <button type="button" id="btnOpenConfig" class="bg-white border-2 border-slate-300 hover:bg-slate-100 text-slate-800 font-bold py-2 px-4 rounded shadow-sm">
+                    ⚙️ Configurar
                 </button>
-                <button type="button" onclick="window.openReportModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition-colors flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-                    </svg>
-                    Copiar Relatório
+                <button type="button" id="btnOpenReport" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded shadow-sm border-2 border-indigo-800">
+                    📋 Relatório
                 </button>
             </div>
         </div>
 
         <!-- Resumo -->
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-                <p class="text-sm font-medium text-slate-500">Meta Diária</p>
-                <p id="metaDiariaDisplay" class="text-xl md:text-2xl font-bold text-indigo-600 mt-1">R$ 0,00</p>
+            <div class="bg-white p-4 rounded-xl shadow-sm border-2 border-slate-200 text-center">
+                <p class="text-xs font-bold text-slate-500 uppercase">Meta Diária</p>
+                <p id="metaDiariaDisplay" class="text-lg font-extrabold text-indigo-600 mt-1">R$ 0,00</p>
             </div>
-            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-                <p class="text-sm font-medium text-slate-500">Total Vendido</p>
-                <p id="totalVendido" class="text-xl md:text-2xl font-bold text-slate-900 mt-1">R$ 0,00</p>
+            <div class="bg-white p-4 rounded-xl shadow-sm border-2 border-slate-200 text-center">
+                <p class="text-xs font-bold text-slate-500 uppercase">Total Vendido</p>
+                <p id="totalVendido" class="text-lg font-extrabold text-slate-900 mt-1">R$ 0,00</p>
             </div>
-            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-                <p class="text-sm font-medium text-slate-500">Percentual da Meta</p>
-                <p id="percentualMeta" class="text-xl md:text-2xl font-bold text-indigo-600 mt-1">0%</p>
-                <div class="w-full bg-slate-200 rounded-full h-1.5 mt-2">
-                    <div id="progressBar" class="bg-indigo-600 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
-                </div>
+            <div class="bg-white p-4 rounded-xl shadow-sm border-2 border-slate-200 text-center">
+                <p class="text-xs font-bold text-slate-500 uppercase">Meta Atingida</p>
+                <p id="percentualMeta" class="text-lg font-extrabold text-indigo-600 mt-1">0%</p>
             </div>
-            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-                <p class="text-sm font-medium text-slate-500">Saldo Restante</p>
-                <p id="saldoRestante" class="text-xl md:text-2xl font-bold text-amber-600 mt-1">R$ 0,00</p>
+            <div class="bg-white p-4 rounded-xl shadow-sm border-2 border-slate-200 text-center">
+                <p class="text-xs font-bold text-slate-500 uppercase">Saldo Restante</p>
+                <p id="saldoRestante" class="text-lg font-extrabold text-amber-600 mt-1">R$ 0,00</p>
             </div>
-            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-                <p class="text-sm font-medium text-slate-500">Vendas Hoje</p>
-                <p id="totalHoje" class="text-xl md:text-2xl font-bold text-emerald-600 mt-1">R$ 0,00</p>
+            <div class="bg-white p-4 rounded-xl shadow-sm border-2 border-slate-200 text-center">
+                <p class="text-xs font-bold text-slate-500 uppercase">Vendas Hoje</p>
+                <p id="totalHoje" class="text-lg font-extrabold text-emerald-600 mt-1">R$ 0,00</p>
             </div>
-            <div class="bg-emerald-50 p-5 rounded-xl shadow-sm border border-emerald-200">
-                <p class="text-sm font-medium text-emerald-700">Comissão Total</p>
-                <p id="totalComissao" class="text-xl md:text-2xl font-bold text-emerald-700 mt-1">R$ 0,00</p>
-                <p id="comissaoPercentualDisplay" class="text-xs text-emerald-600 mt-1 font-medium">0% sobre vendas</p>
+            <div class="bg-emerald-100 p-4 rounded-xl shadow-sm border-2 border-emerald-300 text-center">
+                <p class="text-xs font-bold text-emerald-800 uppercase">Comissão Total</p>
+                <p id="totalComissao" class="text-lg font-extrabold text-emerald-800 mt-1">R$ 0,00</p>
             </div>
         </div>
 
         <!-- Nova Venda -->
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-            <h2 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                Registrar Nova Venda
-            </h2>
-            <form id="vendaForm" onsubmit="window.addVenda(event)" class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+        <div class="bg-white p-6 rounded-xl shadow-sm border-2 border-slate-200">
+            <h2 class="text-lg font-bold text-slate-800 mb-4">➕ Registrar Nova Venda</h2>
+            <form id="vendaForm" class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                 <div class="md:col-span-3">
-                    <label class="block text-sm font-medium text-slate-600 mb-1">Data</label>
-                    <input type="date" id="vendaData" required class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all">
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Data</label>
+                    <input type="date" id="vendaData" required class="w-full px-3 py-2 border-2 border-slate-300 rounded focus:ring-2 focus:ring-emerald-500 outline-none">
                 </div>
                 <div class="md:col-span-3">
-                    <label class="block text-sm font-medium text-slate-600 mb-1">Valor (R$)</label>
-                    <input type="number" id="vendaValor" step="0.01" min="0.01" required class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all" placeholder="0,00">
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Valor (R$)</label>
+                    <input type="number" id="vendaValor" step="0.01" min="0.01" required class="w-full px-3 py-2 border-2 border-slate-300 rounded focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="0,00">
                 </div>
                 <div class="md:col-span-4">
-                    <label class="block text-sm font-medium text-slate-600 mb-1">Descrição / Cliente (Opcional)</label>
-                    <input type="text" id="vendaDescricao" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all" placeholder="Ex: Venda Produto X">
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Descrição (Opcional)</label>
+                    <input type="text" id="vendaDescricao" class="w-full px-3 py-2 border-2 border-slate-300 rounded focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Ex: Cliente X">
                 </div>
                 <div class="md:col-span-2">
-                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
-                        Adicionar
+                    <button type="submit" id="btnAddVenda" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded shadow-sm border-2 border-emerald-800">
+                        SALVAR
                     </button>
                 </div>
             </form>
         </div>
 
         <!-- Histórico -->
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-            <div class="p-6 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                <h2 class="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
-                    Histórico de Vendas
-                </h2>
+        <div class="bg-white rounded-xl shadow-sm border-2 border-slate-200 overflow-hidden">
+            <div class="p-4 border-b-2 border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-3 bg-slate-50">
+                <h2 class="text-lg font-bold text-slate-800">📜 Histórico de Vendas</h2>
                 <div class="flex items-center gap-3">
-                    <span id="totalVendasCount" class="text-sm font-medium text-slate-500 bg-slate-100 px-3 py-1 rounded-full">0 vendas</span>
-                    <button type="button" onclick="window.clearAllVendas()" class="text-sm text-red-600 hover:text-red-800 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors font-medium border border-red-200">
-                        Limpar Histórico
+                    <span id="totalVendasCount" class="text-sm font-bold text-slate-600 bg-white px-3 py-1 rounded border border-slate-300">0 vendas</span>
+                    <button type="button" id="btnClearAll" class="text-sm font-bold text-red-700 hover:text-red-900 bg-red-100 hover:bg-red-200 px-4 py-2 rounded border-2 border-red-300 transition-colors">
+                        🗑️ LIMPAR TUDO
                     </button>
                 </div>
             </div>
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
+                <table class="w-full text-left">
                     <thead>
-                        <tr class="bg-slate-50 text-slate-600 text-sm uppercase tracking-wider">
-                            <th class="px-6 py-4 font-semibold">Data</th>
-                            <th class="px-6 py-4 font-semibold">Descrição</th>
-                            <th class="px-6 py-4 font-semibold text-right">Valor</th>
-                            <th class="px-6 py-4 font-semibold text-center">Ações</th>
+                        <tr class="bg-slate-100 text-slate-700 text-xs uppercase font-bold">
+                            <th class="px-4 py-3">Data</th>
+                            <th class="px-4 py-3">Descrição</th>
+                            <th class="px-4 py-3 text-right">Valor</th>
+                            <th class="px-4 py-3 text-center">Ação</th>
                         </tr>
                     </thead>
-                    <tbody id="vendasTableBody" class="divide-y divide-slate-100 text-sm">
-                        <!-- Vendas serão inseridas aqui -->
+                    <tbody id="vendasTableBody" class="divide-y-2 divide-slate-100 text-sm">
+                        <!-- Vendas aqui -->
                     </tbody>
                 </table>
-                <div id="emptyState" class="hidden p-8 text-center text-slate-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-slate-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <p>Nenhuma venda registrada ainda.</p>
+                <div id="emptyState" class="hidden p-8 text-center text-slate-500 font-medium">
+                    Nenhuma venda registrada ainda.
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Modal de Configuração -->
-    <div id="configModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 fade-in backdrop-blur-sm">
-        <div class="bg-white p-6 rounded-xl shadow-xl w-full max-w-md mx-4 border border-slate-200">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-semibold text-slate-800 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    Configuração da Meta
-                </h2>
-                <button type="button" onclick="window.closeModal()" class="text-slate-400 hover:text-slate-600 hover:bg-slate-100 p-1 rounded-lg transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
+    <div id="configModal" class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white p-6 rounded-xl shadow-2xl w-full max-w-md border-2 border-slate-300">
+            <h2 class="text-xl font-bold text-slate-800 mb-4">⚙️ Configuração da Meta</h2>
             <div class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-slate-600 mb-1">Meta Total do Mês (R$)</label>
-                    <input type="number" id="metaMensal" step="0.01" min="0" class="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all" placeholder="0,00">
+                    <label class="block text-sm font-bold text-slate-600 mb-1">Meta Total do Mês (R$)</label>
+                    <input type="number" id="metaMensal" step="0.01" min="0" class="w-full px-3 py-2 border-2 border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="0,00">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-600 mb-1">Dias de Trabalho no Mês</label>
-                    <input type="number" id="diasUteis" min="1" class="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all" placeholder="22">
+                    <label class="block text-sm font-bold text-slate-600 mb-1">Dias de Trabalho no Mês</label>
+                    <input type="number" id="diasUteis" min="1" class="w-full px-3 py-2 border-2 border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="22">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-600 mb-1">Porcentagem de Comissão (%)</label>
-                    <input type="number" id="comissaoPercentual" step="0.1" min="0" max="100" class="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all" placeholder="Ex: 5">
-                    <p class="text-xs text-slate-500 mt-1">Percentual aplicado sobre o valor total vendido.</p>
+                    <label class="block text-sm font-bold text-slate-600 mb-1">Porcentagem de Comissão (%)</label>
+                    <input type="number" id="comissaoPercentual" step="0.1" min="0" max="100" class="w-full px-3 py-2 border-2 border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Ex: 5">
                 </div>
-                <button type="button" onclick="window.saveConfig()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm transition-colors mt-6 flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                    Salvar Configurações
+                <button type="button" id="btnSaveConfig" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded shadow-sm border-2 border-indigo-800 mt-2">
+                    SALVAR CONFIGURAÇÕES
+                </button>
+                <button type="button" id="btnCloseConfig" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 px-4 rounded border-2 border-slate-400">
+                    Cancelar
                 </button>
             </div>
         </div>
     </div>
 
     <!-- Modal de Relatório -->
-    <div id="reportModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 fade-in backdrop-blur-sm">
-        <div class="bg-white p-6 rounded-xl shadow-xl w-full max-w-sm mx-4 border border-slate-200">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-semibold text-slate-800">Gerar Relatório</h2>
-                <button type="button" onclick="window.closeReportModal()" class="text-slate-400 hover:text-slate-600 hover:bg-slate-100 p-1 rounded-lg transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
+    <div id="reportModal" class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white p-6 rounded-xl shadow-2xl w-full max-w-sm border-2 border-slate-300">
+            <h2 class="text-xl font-bold text-slate-800 mb-4">📋 Gerar Relatório</h2>
             <div class="space-y-3">
-                <button type="button" onclick="window.copyReport('day')" class="w-full bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold py-3 px-4 rounded-lg border border-indigo-200 transition-colors flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    Relatório do Dia (Hoje)
+                <button type="button" id="btnReportDay" class="w-full bg-indigo-50 hover:bg-indigo-100 text-indigo-800 font-bold py-3 px-4 rounded border-2 border-indigo-300">
+                    📅 Relatório do Dia (Hoje)
                 </button>
-                <button type="button" onclick="window.copyReport('month')" class="w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold py-3 px-4 rounded-lg border border-emerald-200 transition-colors flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                    Relatório do Mês Completo
+                <button type="button" id="btnReportMonth" class="w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold py-3 px-4 rounded border-2 border-emerald-300">
+                    📆 Relatório do Mês Completo
+                </button>
+                <button type="button" id="btnCloseReport" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 px-4 rounded border-2 border-slate-400 mt-4">
+                    Fechar
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-4 right-4 bg-slate-800 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-2 z-50">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-        </svg>
-        <span id="toastMessage">Operação realizada com sucesso!</span>
-    </div>
-
     <script>
+        // 1. DETECTOR DE ERROS GLOBAL
+        window.onerror = function(message, source, lineno, colno, error) {
+            const msg = "❌ ERRO: " + message + " (Linha: " + lineno + ")";
+            document.getElementById('debugMessage').textContent = msg;
+            document.getElementById('debugMessage').className = "text-red-800 text-sm font-mono bg-red-200 p-2 rounded font-bold border border-red-400";
+            return true;
+        };
+
+        // 2. DETECTOR DE CLIQUE GLOBAL
+        document.addEventListener('click', function(e) {
+            const targetInfo = e.target.tagName + (e.target.id ? '#' + e.target.id : '') + (e.target.className ? '.' + e.target.className.split(' ')[0] : '');
+            if (!document.getElementById('debugMessage').classList.contains('text-red-800')) {
+                document.getElementById('debugMessage').textContent = "✅ Clique detectado em: " + targetInfo;
+            }
+        });
+
+        let localStorageAvailable = true;
         let state = {
             metaMensal: 0,
             diasUteis: 22,
@@ -226,7 +190,16 @@
             vendas: []
         };
 
+        // FUNÇÃO CORrigida para pegar a data LOCAL do navegador (respeitando o fuso horário)
+        function getLocalDateString(date = new Date()) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
         function formatCurrency(value) {
+            if (isNaN(value)) return "R$ 0,00";
             return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
         }
 
@@ -237,273 +210,265 @@
         }
 
         function loadState() {
-            const saved = localStorage.getItem('salesTrackerState');
-            if (saved) {
-                try {
+            try {
+                const saved = localStorage.getItem('salesTrackerState');
+                if (saved) {
                     const parsed = JSON.parse(saved);
-                    state.metaMensal = parsed.metaMensal || 0;
-                    state.diasUteis = parsed.diasUteis || 22;
-                    state.comissaoPercentual = parsed.comissaoPercentual || 0;
+                    state.metaMensal = parseFloat(parsed.metaMensal) || 0;
+                    state.diasUteis = parseInt(parsed.diasUteis) || 22;
+                    state.comissaoPercentual = parseFloat(parsed.comissaoPercentual) || 0;
                     state.vendas = Array.isArray(parsed.vendas) ? parsed.vendas : [];
-                } catch (e) {
-                    console.error("Erro ao carregar dados", e);
-                    state.vendas = [];
                 }
+                document.getElementById('debugMessage').textContent = "✅ Sistema pronto. (Dados salvos no navegador)";
+            } catch (e) {
+                localStorageAvailable = false;
+                document.getElementById('debugMessage').textContent = "⚠️ MODO MEMÓRIA: Navegador bloqueou o salvamento. Funcionando apenas nesta aba.";
+                document.getElementById('debugMessage').className = "text-amber-800 text-sm font-mono bg-amber-200 p-2 rounded font-bold border border-amber-400";
             }
+            
             document.getElementById('metaMensal').value = state.metaMensal || '';
             document.getElementById('diasUteis').value = state.diasUteis || '';
             document.getElementById('comissaoPercentual').value = state.comissaoPercentual || '';
-            document.getElementById('vendaData').valueAsDate = new Date();
+            
+            // Define a data de hoje usando o fuso horário local correto
+            document.getElementById('vendaData').value = getLocalDateString();
+            
             render();
         }
 
         function saveState() {
-            localStorage.setItem('salesTrackerState', JSON.stringify(state));
+            if (!localStorageAvailable) {
+                render();
+                return;
+            }
+            try {
+                localStorage.setItem('salesTrackerState', JSON.stringify(state));
+            } catch (e) {
+                localStorageAvailable = false;
+                document.getElementById('debugMessage').textContent = "⚠️ MODO MEMÓRIA: Falha ao salvar. Funcionando apenas nesta aba.";
+                document.getElementById('debugMessage').className = "text-amber-800 text-sm font-mono bg-amber-200 p-2 rounded font-bold border border-amber-400";
+            }
             render();
         }
 
-        window.openModal = function() {
+        function render() {
+            try {
+                const metaDiaria = state.diasUteis > 0 ? (state.metaMensal / state.diasUteis) : 0;
+                document.getElementById('metaDiariaDisplay').textContent = formatCurrency(metaDiaria);
+
+                const totalVendido = state.vendas.reduce((acc, v) => acc + (parseFloat(v.valor) || 0), 0);
+                const percentual = state.metaMensal > 0 ? (totalVendido / state.metaMensal) * 100 : 0;
+                const saldoRestante = Math.max(0, state.metaMensal - totalVendido);
+                const totalComissao = totalVendido * (state.comissaoPercentual / 100);
+                
+                // Usa a data local correta para filtrar as vendas de hoje
+                const todayStr = getLocalDateString();
+                const vendasHoje = state.vendas.filter(v => v.data === todayStr);
+                const totalHoje = vendasHoje.reduce((acc, v) => acc + (parseFloat(v.valor) || 0), 0);
+
+                document.getElementById('totalVendido').textContent = formatCurrency(totalVendido);
+                document.getElementById('percentualMeta').textContent = percentual.toFixed(1) + '%';
+                document.getElementById('saldoRestante').textContent = formatCurrency(saldoRestante);
+                document.getElementById('totalHoje').textContent = formatCurrency(totalHoje);
+                document.getElementById('totalComissao').textContent = formatCurrency(totalComissao);
+
+                const tbody = document.getElementById('vendasTableBody');
+                const emptyState = document.getElementById('emptyState');
+                const countBadge = document.getElementById('totalVendasCount');
+                
+                tbody.innerHTML = '';
+                countBadge.textContent = `${state.vendas.length} venda(s)`;
+
+                if (state.vendas.length === 0) {
+                    emptyState.classList.remove('hidden');
+                } else {
+                    emptyState.classList.add('hidden');
+                    state.vendas.forEach(venda => {
+                        const tr = document.createElement('tr');
+                        tr.className = 'hover:bg-slate-50';
+                        tr.innerHTML = `
+                            <td class="px-4 py-3 text-slate-700 font-medium">${formatDate(venda.data)}</td>
+                            <td class="px-4 py-3 text-slate-600">${venda.descricao}</td>
+                            <td class="px-4 py-3 text-right font-bold text-emerald-600">${formatCurrency(venda.valor)}</td>
+                            <td class="px-4 py-3 text-center">
+                                <button type="button" class="btn-excluir bg-red-500 hover:bg-red-600 text-white font-bold text-xs px-3 py-2 rounded shadow border-2 border-red-700" data-id="${venda.id}">
+                                    EXCLUIR
+                                </button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            } catch (e) {
+                console.error("Erro no render:", e);
+            }
+        }
+
+        window.excluirVenda = function(id) {
+            document.getElementById('debugMessage').textContent = "⚙️ Processando exclusão do ID: " + id;
+            setTimeout(() => {
+                if (confirm('Tem certeza que deseja EXCLUIR esta venda?')) {
+                    const antes = state.vendas.length;
+                    state.vendas = state.vendas.filter(v => String(v.id) !== String(id));
+                    
+                    if (state.vendas.length < antes) {
+                        saveState();
+                        alert('✅ Venda excluída com sucesso!');
+                        document.getElementById('debugMessage').textContent = "✅ Venda excluída com sucesso!";
+                    } else {
+                        alert('❌ Erro: Venda não encontrada.');
+                        document.getElementById('debugMessage').textContent = "❌ Erro: Venda não encontrada.";
+                    }
+                } else {
+                    document.getElementById('debugMessage').textContent = "⏸️ Exclusão cancelada pelo usuário.";
+                }
+            }, 50);
+        };
+
+        window.limparTudo = function() {
+            document.getElementById('debugMessage').textContent = "⚙️ Processando limpeza do histórico...";
+            setTimeout(() => {
+                if (state.vendas.length === 0) {
+                    alert('O histórico já está vazio.');
+                    return;
+                }
+                if (confirm('⚠️ ATENÇÃO: Isso apagará TODAS as vendas permanentemente. Continuar?')) {
+                    state.vendas = [];
+                    saveState();
+                    alert('✅ Histórico limpo com sucesso!');
+                    document.getElementById('debugMessage').textContent = "✅ Histórico limpo com sucesso!";
+                } else {
+                    document.getElementById('debugMessage').textContent = "⏸️ Limpeza cancelada pelo usuário.";
+                }
+            }, 50);
+        };
+
+        document.getElementById('btnOpenConfig').addEventListener('click', () => {
             document.getElementById('configModal').classList.remove('hidden');
             document.getElementById('configModal').classList.add('flex');
-        }
+        });
 
-        window.closeModal = function() {
+        document.getElementById('btnCloseConfig').addEventListener('click', () => {
             document.getElementById('configModal').classList.add('hidden');
             document.getElementById('configModal').classList.remove('flex');
-        }
+        });
 
-        window.saveConfig = function() {
+        document.getElementById('btnSaveConfig').addEventListener('click', () => {
             state.metaMensal = parseFloat(document.getElementById('metaMensal').value) || 0;
             state.diasUteis = parseInt(document.getElementById('diasUteis').value) || 0;
             state.comissaoPercentual = parseFloat(document.getElementById('comissaoPercentual').value) || 0;
             saveState();
-            window.closeModal();
-            showToast('Configurações salvas com sucesso!');
-        }
+            document.getElementById('configModal').classList.add('hidden');
+            document.getElementById('configModal').classList.remove('flex');
+            alert('✅ Configurações salvas!');
+        });
 
-        window.openReportModal = function() {
+        document.getElementById('btnOpenReport').addEventListener('click', () => {
             document.getElementById('reportModal').classList.remove('hidden');
             document.getElementById('reportModal').classList.add('flex');
-        }
+        });
 
-        window.closeReportModal = function() {
+        document.getElementById('btnCloseReport').addEventListener('click', () => {
             document.getElementById('reportModal').classList.add('hidden');
             document.getElementById('reportModal').classList.remove('flex');
-        }
+        });
 
-        window.addVenda = function(event) {
-            event.preventDefault();
-            const data = document.getElementById('vendaData').value;
-            const valor = parseFloat(document.getElementById('vendaValor').value);
-            const descricao = document.getElementById('vendaDescricao').value.trim();
+        document.getElementById('vendaForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            try {
+                const data = document.getElementById('vendaData').value;
+                const valor = parseFloat(document.getElementById('vendaValor').value);
+                const descricao = document.getElementById('vendaDescricao').value.trim();
 
-            if (!data || isNaN(valor) || valor <= 0) {
-                showToast('Preencha a data e o valor corretamente.', 'error');
-                return;
-            }
-
-            const novaVenda = {
-                id: Date.now().toString(),
-                data,
-                valor,
-                descricao: descricao || 'Sem descrição'
-            };
-
-            state.vendas.push(novaVenda);
-            state.vendas.sort((a, b) => new Date(b.data) - new Date(a.data));
-            
-            saveState();
-            
-            document.getElementById('vendaValor').value = '';
-            document.getElementById('vendaDescricao').value = '';
-            document.getElementById('vendaValor').focus();
-            
-            showToast('Venda adicionada com sucesso!');
-        }
-
-        window.deleteVenda = function(id) {
-            console.log("Tentando excluir ID:", id);
-            if (confirm('Tem certeza que deseja excluir esta venda? Esta ação não pode ser desfeita.')) {
-                const initialLength = state.vendas.length;
-                state.vendas = state.vendas.filter(v => String(v.id) !== String(id));
-                
-                if (state.vendas.length < initialLength) {
-                    saveState();
-                    showToast('Venda excluída com sucesso!');
-                } else {
-                    showToast('Venda não encontrada.', 'error');
+                if (!data || isNaN(valor) || valor <= 0) {
+                    alert('❌ Preencha a data e o valor corretamente.');
+                    return;
                 }
-            }
-        }
 
-        window.clearAllVendas = function() {
-            console.log("Tentando limpar histórico");
-            if (state.vendas.length === 0) {
-                showToast('O histórico já está vazio.', 'error');
-                return;
-            }
-            if (confirm('ATENÇÃO: Isso apagará TODAS as vendas registradas permanentemente. Deseja continuar?')) {
-                state.vendas = [];
+                state.vendas.push({
+                    id: Date.now().toString(),
+                    data: data,
+                    valor: valor,
+                    descricao: descricao || 'Sem descrição'
+                });
+                
+                state.vendas.sort((a, b) => new Date(b.data) - new Date(a.data));
+                
                 saveState();
-                showToast('Histórico limpo com sucesso!');
+                
+                document.getElementById('vendaValor').value = '';
+                document.getElementById('vendaDescricao').value = '';
+                document.getElementById('vendaValor').focus();
+                
+                alert('✅ Venda adicionada com sucesso!');
+            } catch (e) {
+                alert('❌ Erro ao adicionar venda: ' + e.message);
             }
-        }
+        });
 
-        function render() {
-            const metaDiaria = state.diasUteis > 0 ? (state.metaMensal / state.diasUteis) : 0;
-            document.getElementById('metaDiariaDisplay').textContent = formatCurrency(metaDiaria);
+        document.getElementById('btnClearAll').addEventListener('click', window.limparTudo);
 
-            const totalVendido = state.vendas.reduce((acc, v) => acc + v.valor, 0);
-            const percentual = state.metaMensal > 0 ? (totalVendido / state.metaMensal) * 100 : 0;
-            const saldoRestante = Math.max(0, state.metaMensal - totalVendido);
-            const totalComissao = totalVendido * (state.comissaoPercentual / 100);
-            
-            const todayStr = new Date().toISOString().split('T')[0];
-            const vendasHoje = state.vendas.filter(v => v.data === todayStr);
-            const totalHoje = vendasHoje.reduce((acc, v) => acc + v.valor, 0);
+        document.getElementById('btnReportDay').addEventListener('click', () => {
+            window.copyReport('day');
+        });
+        
+        document.getElementById('btnReportMonth').addEventListener('click', () => {
+            window.copyReport('month');
+        });
 
-            document.getElementById('totalVendido').textContent = formatCurrency(totalVendido);
-            document.getElementById('percentualMeta').textContent = percentual.toFixed(1) + '%';
-            document.getElementById('progressBar').style.width = Math.min(100, percentual) + '%';
-            document.getElementById('saldoRestante').textContent = formatCurrency(saldoRestante);
-            document.getElementById('totalHoje').textContent = formatCurrency(totalHoje);
-            document.getElementById('totalComissao').textContent = formatCurrency(totalComissao);
-            document.getElementById('comissaoPercentualDisplay').textContent = `${state.comissaoPercentual}% sobre vendas`;
-
-            const tbody = document.getElementById('vendasTableBody');
-            const emptyState = document.getElementById('emptyState');
-            const countBadge = document.getElementById('totalVendasCount');
-            
-            tbody.innerHTML = '';
-            countBadge.textContent = `${state.vendas.length} venda${state.vendas.length !== 1 ? 's' : ''}`;
-
-            if (state.vendas.length === 0) {
-                emptyState.classList.remove('hidden');
-            } else {
-                emptyState.classList.add('hidden');
-                state.vendas.forEach(venda => {
-                    const tr = document.createElement('tr');
-                    tr.className = 'hover:bg-slate-50 transition-colors fade-in';
-                    tr.innerHTML = `
-                        <td class="px-6 py-4 text-slate-700">${formatDate(venda.data)}</td>
-                        <td class="px-6 py-4 text-slate-700 font-medium">${venda.descricao}</td>
-                        <td class="px-6 py-4 text-right font-semibold text-emerald-600">${formatCurrency(venda.valor)}</td>
-                        <td class="px-6 py-4 text-center">
-                            <button type="button" onclick="window.deleteVenda('${venda.id}')" class="text-red-500 hover:text-red-700 hover:bg-red-50 p-2.5 rounded-lg transition-colors flex items-center justify-center mx-auto" title="Excluir venda">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                            </button>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
+        document.getElementById('vendasTableBody').addEventListener('click', function(e) {
+            const btn = e.target.closest('.btn-excluir');
+            if (btn) {
+                const id = btn.getAttribute('data-id');
+                document.getElementById('debugMessage').textContent = "🔴 Botão EXCLUIR clicado! ID: " + id;
+                window.excluirVenda(id);
             }
-        }
+        });
 
-        window.copyReport = function(period) {
-            window.closeReportModal();
+        function copyReport(period) {
+            document.getElementById('reportModal').classList.add('hidden');
+            document.getElementById('reportModal').classList.remove('flex');
+            
             const today = new Date().toLocaleDateString('pt-BR');
-            const todayStr = new Date().toISOString().split('T')[0];
-            
+            // Usa a data local correta para filtrar o relatório
+            const todayStr = getLocalDateString();
             const filteredVendas = period === 'day' ? state.vendas.filter(v => v.data === todayStr) : state.vendas;
-            const totalPeriod = filteredVendas.reduce((acc, v) => acc + v.valor, 0);
-            const comissaoPeriod = totalPeriod * (state.comissaoPercentual / 100);
+            const totalPeriod = filteredVendas.reduce((acc, v) => acc + (parseFloat(v.valor) || 0), 0);
             
-            const totalVendidoMes = state.vendas.reduce((acc, v) => acc + v.valor, 0);
-            const percentualMes = state.metaMensal > 0 ? (totalVendidoMes / state.metaMensal) * 100 : 0;
-            const saldoRestante = Math.max(0, state.metaMensal - totalVendidoMes);
-            const metaDiaria = state.diasUteis > 0 ? (state.metaMensal / state.diasUteis) : 0;
-            const totalComissaoMes = totalVendidoMes * (state.comissaoPercentual / 100);
-
-            let report = '';
+            let report = `📊 RELATÓRIO DE VENDAS - ${today}\n\n`;
+            report += `💵 Total no Período: ${formatCurrency(totalPeriod)}\n`;
+            report += `💸 Comissão (${state.comissaoPercentual}%): ${formatCurrency(totalPeriod * (state.comissaoPercentual / 100))}\n`;
+            report += `📝 Qtd. Vendas: ${filteredVendas.length}\n\n`;
             
-            if (period === 'day') {
-                report = `📊 RELATÓRIO DIÁRIO DE VENDAS - ${today}\n\n`;
-                report += `💵 Total Vendido Hoje: ${formatCurrency(totalPeriod)}\n`;
-                report += `💸 Comissão do Dia (${state.comissaoPercentual}%): ${formatCurrency(comissaoPeriod)}\n`;
-                report += `📝 Quantidade de Vendas: ${filteredVendas.length}\n\n`;
-                
-                if (filteredVendas.length > 0) {
-                    report += `📋 Detalhamento das Vendas de Hoje:\n`;
-                    filteredVendas.forEach(v => {
-                        report += `- ${formatCurrency(v.valor)} | ${v.descricao}\n`;
-                    });
-                } else {
-                    report += `📋 Nenhuma venda registrada hoje.\n`;
-                }
-                
-                report += `\n--- Resumo do Mês ---\n`;
-                report += `🎯 Meta Mensal: ${formatCurrency(state.metaMensal)}\n`;
-                report += `✅ Total Vendido (Mês): ${formatCurrency(totalVendidoMes)}\n`;
-                report += `📈 Percentual da Meta: ${percentualMes.toFixed(1)}%\n`;
-            } else {
-                report = `📊 RELATÓRIO MENSAL DE VENDAS - ${today}\n\n`;
-                report += `🎯 Meta Mensal: ${formatCurrency(state.metaMensal)}\n`;
-                report += `📅 Dias de Trabalho: ${state.diasUteis}\n`;
-                report += `💰 Meta Diária: ${formatCurrency(metaDiaria)}\n\n`;
-                report += `✅ Total Vendido (Mês): ${formatCurrency(totalVendidoMes)}\n`;
-                report += `📈 Percentual da Meta: ${percentualMes.toFixed(1)}%\n`;
-                report += `💸 Comissão Total (${state.comissaoPercentual}%): ${formatCurrency(totalComissaoMes)}\n`;
-                report += `🚀 Saldo Restante para a Meta: ${formatCurrency(saldoRestante)}\n\n`;
-                
-                report += `📋 Resumo por Dia:\n`;
-                const vendasPorDia = {};
+            if (filteredVendas.length > 0) {
+                report += `📋 Detalhamento:\n`;
                 filteredVendas.forEach(v => {
-                    if (!vendasPorDia[v.data]) vendasPorDia[v.data] = { total: 0, count: 0 };
-                    vendasPorDia[v.data].total += v.valor;
-                    vendasPorDia[v.data].count += 1;
-                });
-                
-                const diasOrdenados = Object.keys(vendasPorDia).sort((a, b) => new Date(b) - new Date(a));
-                diasOrdenados.forEach(dia => {
-                    report += `- ${formatDate(dia)}: ${formatCurrency(vendasPorDia[dia].total)} (${vendasPorDia[dia].count} venda(s))\n`;
+                    report += `- ${formatDate(v.data)} | ${formatCurrency(v.valor)} | ${v.descricao}\n`;
                 });
             }
 
             navigator.clipboard.writeText(report).then(() => {
-                showToast(`Relatório ${period === 'day' ? 'diário' : 'mensal'} copiado com sucesso!`);
-            }).catch(err => {
-                console.error('Erro ao copiar:', err);
-                showToast('Erro ao copiar relatório.', 'error');
+                alert('✅ Relatório copiado para a área de transferência!');
+            }).catch(() => {
+                alert('❌ Erro ao copiar relatório. Verifique as permissões.');
             });
         }
 
-        function showToast(message, type = 'success') {
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toastMessage');
-            const icon = toast.querySelector('svg');
-            
-            toastMessage.textContent = message;
-            
-            if (type === 'error') {
-                icon.classList.remove('text-emerald-400');
-                icon.classList.add('text-red-400');
-                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />';
-            } else {
-                icon.classList.remove('text-red-400');
-                icon.classList.add('text-emerald-400');
-                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />';
+        document.getElementById('configModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.add('hidden');
+                this.classList.remove('flex');
             }
-            
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
-        }
+        });
+        document.getElementById('reportModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.add('hidden');
+                this.classList.remove('flex');
+            }
+        });
 
-        // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
             loadState();
-            
-            // Fechar modais ao clicar fora
-            document.getElementById('configModal').addEventListener('click', function(e) {
-                if (e.target === this) window.closeModal();
-            });
-            document.getElementById('reportModal').addEventListener('click', function(e) {
-                if (e.target === this) window.closeReportModal();
-            });
         });
     </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"75124c326cb447fe934cde04713ae013","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
