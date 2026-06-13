@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Monitor de Metas de Vendas</title>
+    <title>Monitor Financeiro de Vendas</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -29,8 +29,8 @@
                         </svg>
                     </div>
                     <div>
-                        <h1 class="text-xl font-bold text-slate-900 tracking-tight">Monitor de Metas</h1>
-                        <p class="text-xs text-slate-500 font-medium">Controle de vendas e comissões</p>
+                        <h1 class="text-xl font-bold text-slate-900 tracking-tight">Monitor Financeiro</h1>
+                        <p class="text-xs text-slate-500 font-medium">Vendas, comissões e salário estimado</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-3 w-full sm:w-auto">
@@ -55,19 +55,20 @@
 
     <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 w-full">
         
-        <!-- KPIs / Resumo (Agora com 5 cards) -->
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
-            <!-- Meta Diária -->
-            <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+        <!-- KPIs / Resumo (Agora com 7 Cards para melhor distribuição) -->
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3 sm:gap-4">
+            <!-- Salário Estimado (Destaque) -->
+            <div class="bg-gradient-to-br from-indigo-600 to-indigo-700 p-4 sm:p-5 rounded-2xl border border-indigo-500 shadow-md hover:shadow-lg transition-shadow col-span-2 md:col-span-1 lg:col-span-2 xl:col-span-2 text-white">
                 <div class="flex items-center justify-between mb-2">
-                    <p class="text-xs sm:text-sm font-medium text-slate-500">Meta Diária</p>
-                    <div class="p-1.5 bg-indigo-50 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <p class="text-xs sm:text-sm font-medium text-indigo-100">Salário Estimado</p>
+                    <div class="p-1.5 bg-indigo-500/50 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                         </svg>
                     </div>
                 </div>
-                <p id="metaDiariaDisplay" class="text-lg sm:text-2xl font-bold text-slate-900">R$ 0,00</p>
+                <p id="salarioEstimado" class="text-2xl sm:text-3xl font-bold text-white">R$ 0,00</p>
+                <p class="text-[10px] sm:text-xs text-indigo-200 mt-1 font-medium">Base + Benefícios + Comissão</p>
             </div>
 
             <!-- Total Vendido -->
@@ -84,49 +85,77 @@
                 <div class="mt-2 w-full bg-slate-100 rounded-full h-1.5">
                     <div id="progressBar" class="bg-blue-600 h-1.5 rounded-full transition-all duration-700 ease-out" style="width: 0%"></div>
                 </div>
-                <p id="percentualMeta" class="text-[10px] sm:text-xs text-slate-500 mt-1 font-medium">0% da meta mensal</p>
+                <p id="percentualMeta" class="text-[10px] sm:text-xs text-slate-500 mt-1 font-medium">0% da meta</p>
             </div>
 
-            <!-- Saldo Restante (NOVO) -->
+            <!-- Falta para Meta -->
             <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
                 <div class="flex items-center justify-between mb-2">
-                    <p class="text-xs sm:text-sm font-medium text-slate-500">Saldo Restante</p>
+                    <p class="text-xs sm:text-sm font-medium text-slate-500">Falta para Meta</p>
                     <div class="p-1.5 bg-amber-50 rounded-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
                     </div>
                 </div>
                 <p id="saldoRestante" class="text-lg sm:text-2xl font-bold text-amber-600">R$ 0,00</p>
-                <p class="text-[10px] sm:text-xs text-slate-500 mt-1 font-medium">Para atingir a meta</p>
+                <p class="text-[10px] sm:text-xs text-slate-500 mt-1 font-medium">Para atingir o objetivo</p>
+            </div>
+
+            <!-- Comissão Total -->
+            <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs sm:text-sm font-medium text-slate-500">Comissão</p>
+                    <div class="p-1.5 bg-emerald-50 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                </div>
+                <p id="totalComissao" class="text-lg sm:text-2xl font-bold text-emerald-700">R$ 0,00</p>
+                <p id="comissaoPercentualDisplay" class="text-[10px] sm:text-xs text-slate-500 mt-1 font-medium">0% sobre vendas</p>
+            </div>
+
+            <!-- Clientes Restantes Hoje (NOVO) -->
+            <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs sm:text-sm font-medium text-slate-500">Clientes Restantes Hoje</p>
+                    <div class="p-1.5 bg-purple-50 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                    </div>
+                </div>
+                <p id="clientesRestantesHoje" class="text-lg sm:text-2xl font-bold text-purple-600">0</p>
+                <p class="text-[10px] sm:text-xs text-slate-500 mt-1 font-medium">para meta diária</p>
             </div>
 
             <!-- Vendas Hoje -->
             <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
                 <div class="flex items-center justify-between mb-2">
                     <p class="text-xs sm:text-sm font-medium text-slate-500">Vendas Hoje</p>
-                    <div class="p-1.5 bg-emerald-50 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    <div class="p-1.5 bg-sky-50 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                     </div>
                 </div>
-                <p id="totalHoje" class="text-lg sm:text-2xl font-bold text-emerald-600">R$ 0,00</p>
-                <p class="text-[10px] sm:text-xs text-slate-500 mt-1 font-medium">Foco no objetivo diário</p>
+                <p id="totalHoje" class="text-lg sm:text-2xl font-bold text-sky-600">R$ 0,00</p>
+                <p class="text-[10px] sm:text-xs text-slate-500 mt-1 font-medium">Foco no diário</p>
             </div>
 
-            <!-- Comissão Total -->
-            <div class="bg-gradient-to-br from-emerald-50 to-teal-50 p-4 sm:p-5 rounded-2xl border border-emerald-100 shadow-sm hover:shadow-md transition-shadow col-span-2 md:col-span-1 lg:col-span-1">
+            <!-- Meta Diária -->
+            <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
                 <div class="flex items-center justify-between mb-2">
-                    <p class="text-xs sm:text-sm font-medium text-emerald-800">Comissão Total</p>
-                    <div class="p-1.5 bg-emerald-100 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <p class="text-xs sm:text-sm font-medium text-slate-500">Meta Diária</p>
+                    <div class="p-1.5 bg-slate-100 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                         </svg>
                     </div>
                 </div>
-                <p id="totalComissao" class="text-lg sm:text-2xl font-bold text-emerald-700">R$ 0,00</p>
-                <p id="comissaoPercentualDisplay" class="text-[10px] sm:text-xs text-emerald-600 mt-1 font-medium">0% sobre o total</p>
+                <p id="metaDiariaDisplay" class="text-lg sm:text-2xl font-bold text-slate-900">R$ 0,00</p>
+                <p class="text-[10px] sm:text-xs text-slate-500 mt-1 font-medium">Objetivo por dia</p>
             </div>
         </div>
 
@@ -218,18 +247,18 @@
     <!-- Footer discreto -->
     <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 border-t border-slate-200 mt-auto w-full">
         <div class="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-400">
-            <span>© 2024 Monitor de Metas. Dados salvos localmente.</span>
+            <span>© 2024 Monitor Financeiro. Dados salvos localmente.</span>
             <span class="flex items-center gap-1.5">
                 <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                Sistema Online (v3.1 Responsivo)
+                Sistema Online (v5.0)
             </span>
         </div>
     </footer>
 
     <!-- Modal de Configuração -->
     <div id="configModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 fade-in p-4">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md border border-slate-200 overflow-hidden">
-            <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md border border-slate-200 overflow-hidden max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 sticky top-0 z-10">
                 <h2 class="text-lg font-semibold text-slate-900 flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -243,20 +272,61 @@
                     </svg>
                 </button>
             </div>
-            <div class="p-5 space-y-4">
+            <div class="p-5 space-y-5">
+                <!-- Metas -->
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Meta Total do Mês (R$)</label>
-                    <input type="number" id="metaMensal" step="0.01" min="0" class="w-full h-11 px-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all" placeholder="0,00">
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Metas e Comissões</p>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Meta Total do Mês (R$)</label>
+                            <input type="number" id="metaMensal" step="0.01" min="0" class="w-full h-11 px-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="0,00">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Dias de Trabalho no Mês</label>
+                            <input type="number" id="diasUteis" min="1" class="w-full h-11 px-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Ex: 22">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Porcentagem de Comissão (%)</label>
+                            <input type="number" id="comissaoPercentual" step="0.1" min="0" max="100" class="w-full h-11 px-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Ex: 5">
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Dias de Trabalho no Mês</label>
-                    <input type="number" id="diasUteis" min="1" class="w-full h-11 px-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all" placeholder="Ex: 22">
+
+                <!-- Salário e Benefícios -->
+                <div class="border-t border-slate-100 pt-5">
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Salário e Benefícios</p>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Salário Base Fixo (R$)</label>
+                            <input type="number" id="salarioBase" step="0.01" min="0" class="w-full h-11 px-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="0,00">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1.5">VT por dia (R$)</label>
+                                <input type="number" id="valorVT" step="0.01" min="0" class="w-full h-11 px-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="0,00">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1.5">VÁ por dia (R$)</label>
+                                <input type="number" id="valorVA" step="0.01" min="0" class="w-full h-11 px-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="0,00">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Porcentagem de Comissão (%)</label>
-                    <input type="number" id="comissaoPercentual" step="0.1" min="0" max="100" class="w-full h-11 px-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all" placeholder="Ex: 5">
-                    <p class="text-xs text-slate-500 mt-1.5">Percentual aplicado sobre o valor total vendido.</p>
+
+                <!-- Estratégia Diária -->
+                <div class="border-t border-slate-100 pt-5">
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Estratégia Diária</p>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Valor Mínimo por Cliente (R$)</label>
+                            <input type="number" id="valorMinimoPorCliente" step="0.01" min="0" class="w-full h-11 px-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Ex: 50,00">
+                            <p class="text-xs text-slate-500 mt-1.5 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                💡 O sistema usará este valor para calcular quantos clientes você precisa atender hoje para bater a meta diária.
+                            </p>
+                        </div>
+                    </div>
                 </div>
+
                 <button type="button" id="btnSaveConfig" class="w-full h-11 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-sm hover:shadow transition-all mt-2 active:scale-[0.98]">
                     Salvar Configurações
                 </button>
@@ -329,6 +399,10 @@
             metaMensal: 0,
             diasUteis: 22,
             comissaoPercentual: 0,
+            salarioBase: 0,
+            valorVT: 0,
+            valorVA: 0,
+            valorMinimoPorCliente: 0,
             vendas: []
         };
 
@@ -340,6 +414,10 @@
                     state.metaMensal = parseFloat(parsed.metaMensal) || 0;
                     state.diasUteis = parseInt(parsed.diasUteis) || 22;
                     state.comissaoPercentual = parseFloat(parsed.comissaoPercentual) || 0;
+                    state.salarioBase = parseFloat(parsed.salarioBase) || 0;
+                    state.valorVT = parseFloat(parsed.valorVT) || 0;
+                    state.valorVA = parseFloat(parsed.valorVA) || 0;
+                    state.valorMinimoPorCliente = parseFloat(parsed.valorMinimoPorCliente) || 0;
                     state.vendas = Array.isArray(parsed.vendas) ? parsed.vendas : [];
                 }
             } catch (e) {
@@ -350,6 +428,10 @@
             document.getElementById('metaMensal').value = state.metaMensal || '';
             document.getElementById('diasUteis').value = state.diasUteis || '';
             document.getElementById('comissaoPercentual').value = state.comissaoPercentual || '';
+            document.getElementById('salarioBase').value = state.salarioBase || '';
+            document.getElementById('valorVT').value = state.valorVT || '';
+            document.getElementById('valorVA').value = state.valorVA || '';
+            document.getElementById('valorMinimoPorCliente').value = state.valorMinimoPorCliente || '';
             document.getElementById('vendaData').value = getLocalDateString();
             
             render();
@@ -378,17 +460,45 @@
             const saldoRestante = Math.max(0, state.metaMensal - totalVendido);
             const totalComissao = totalVendido * (state.comissaoPercentual / 100);
             
+            // Cálculo do Salário Estimado
+            const totalBeneficios = (state.valorVT + state.valorVA) * state.diasUteis;
+            const salarioEstimado = state.salarioBase + totalBeneficios + totalComissao;
+            
             const todayStr = getLocalDateString();
             const vendasHoje = state.vendas.filter(v => v.data === todayStr);
             const totalHoje = vendasHoje.reduce((acc, v) => acc + (parseFloat(v.valor) || 0), 0);
+            
+            // Cálculo de Clientes Restantes Hoje
+            const faltaHoje = Math.max(0, metaDiaria - totalHoje);
+            let clientesRestantes = 0;
+            if (faltaHoje > 0 && state.valorMinimoPorCliente > 0) {
+                clientesRestantes = Math.ceil(faltaHoje / state.valorMinimoPorCliente);
+            } else if (faltaHoje <= 0) {
+                clientesRestantes = 0; // Meta já atingida
+            }
 
             document.getElementById('totalVendido').textContent = formatCurrency(totalVendido);
-            document.getElementById('percentualMeta').textContent = `${percentual.toFixed(1)}% da meta mensal`;
+            document.getElementById('percentualMeta').textContent = `${percentual.toFixed(1)}% da meta`;
             document.getElementById('progressBar').style.width = Math.min(100, percentual) + '%';
             document.getElementById('saldoRestante').textContent = formatCurrency(saldoRestante);
-            document.getElementById('totalHoje').textContent = formatCurrency(totalHoje);
             document.getElementById('totalComissao').textContent = formatCurrency(totalComissao);
-            document.getElementById('comissaoPercentualDisplay').textContent = `${state.comissaoPercentual}% sobre o total`;
+            document.getElementById('comissaoPercentualDisplay').textContent = `${state.comissaoPercentual}% sobre vendas`;
+            document.getElementById('totalHoje').textContent = formatCurrency(totalHoje);
+            document.getElementById('salarioEstimado').textContent = formatCurrency(salarioEstimado);
+            
+            // Atualiza o card de clientes restantes
+            const elClientes = document.getElementById('clientesRestantesHoje');
+            elClientes.textContent = clientesRestantes;
+            if (clientesRestantes === 0 && faltaHoje <= 0) {
+                elClientes.textContent = "🎉";
+                elClientes.nextElementSibling.textContent = "Meta diária atingida!";
+                elClientes.classList.remove('text-purple-600');
+                elClientes.classList.add('text-emerald-600');
+            } else {
+                elClientes.nextElementSibling.textContent = "para meta diária";
+                elClientes.classList.remove('text-emerald-600');
+                elClientes.classList.add('text-purple-600');
+            }
 
             const tbody = document.getElementById('vendasTableBody');
             const emptyState = document.getElementById('emptyState');
@@ -450,7 +560,6 @@
                 if (confirm('Tem certeza que deseja excluir esta venda? Esta ação não pode ser desfeita.')) {
                     const antes = state.vendas.length;
                     state.vendas = state.vendas.filter(v => String(v.id) !== String(id));
-                    
                     if (state.vendas.length < antes) {
                         saveState();
                         showToast('Venda excluída com sucesso!');
@@ -484,22 +593,43 @@
             const filteredVendas = period === 'day' ? state.vendas.filter(v => v.data === todayStr) : state.vendas;
             const totalPeriod = filteredVendas.reduce((acc, v) => acc + (parseFloat(v.valor) || 0), 0);
             
-            let report = `📊 RELATÓRIO DE VENDAS - ${today}\n\n`;
-            report += `💵 Total no Período: ${formatCurrency(totalPeriod)}\n`;
-            report += `💸 Comissão (${state.comissaoPercentual}%): ${formatCurrency(totalPeriod * (state.comissaoPercentual / 100))}\n`;
-            report += `📝 Qtd. Vendas: ${filteredVendas.length}\n\n`;
+            const totalVendidoMes = state.vendas.reduce((acc, v) => acc + (parseFloat(v.valor) || 0), 0);
+            const totalComissaoMes = totalVendidoMes * (state.comissaoPercentual / 100);
+            const totalBeneficios = (state.valorVT + state.valorVA) * state.diasUteis;
+            const salarioEstimado = state.salarioBase + totalBeneficios + totalComissaoMes;
+            const metaDiaria = state.diasUteis > 0 ? (state.metaMensal / state.diasUteis) : 0;
+            const totalHoje = filteredVendas.filter(v => v.data === todayStr).reduce((acc, v) => acc + (parseFloat(v.valor) || 0), 0);
+            const faltaHoje = Math.max(0, metaDiaria - totalHoje);
+            const clientesRestantes = (faltaHoje > 0 && state.valorMinimoPorCliente > 0) ? Math.ceil(faltaHoje / state.valorMinimoPorCliente) : 0;
+
+            let report = `📊 RELATÓRIO FINANCEIRO - ${today}\n\n`;
+            
+            if (period === 'day') {
+                report += `🎯 Meta Diária: ${formatCurrency(metaDiaria)}\n`;
+                report += `✅ Vendido Hoje: ${formatCurrency(totalHoje)}\n`;
+                report += `👥 Clientes Restantes Hoje: ${clientesRestantes === 0 && faltaHoje <= 0 ? 'Meta Atingida! 🎉' : clientesRestantes}\n\n`;
+            }
+            
+            report += `--- RESUMO MENSAL ---\n`;
+            report += `🎯 Meta Mensal: ${formatCurrency(state.metaMensal)}\n`;
+            report += `✅ Total Vendido: ${formatCurrency(totalVendidoMes)}\n`;
+            report += `📈 Atingimento: ${state.metaMensal > 0 ? ((totalVendidoMes / state.metaMensal) * 100).toFixed(1) : 0}%\n\n`;
+            
+            report += `--- COMPOSIÇÃO DO SALÁRIO ---\n`;
+            report += `💰 Salário Base: ${formatCurrency(state.salarioBase)}\n`;
+            report += `🚌 Benefícios (VT/VA): ${formatCurrency(totalBeneficios)}\n`;
+            report += `💸 Comissão Total: ${formatCurrency(totalComissaoMes)}\n`;
+            report += `🚀 SALÁRIO ESTIMADO: ${formatCurrency(salarioEstimado)}\n\n`;
             
             if (filteredVendas.length > 0) {
-                report += `📋 Detalhamento:\n`;
+                report += `📋 Detalhamento das Vendas:\n`;
                 filteredVendas.forEach(v => {
                     report += `- ${formatDate(v.data)} | ${formatCurrency(v.valor)} | ${v.descricao}\n`;
                 });
-            } else {
-                report += `📋 Nenhuma venda registrada neste período.\n`;
             }
 
             navigator.clipboard.writeText(report).then(() => {
-                showToast(`Relatório ${period === 'day' ? 'diário' : 'mensal'} copiado!`);
+                showToast(`Relatório copiado com sucesso!`);
             }).catch(() => {
                 showToast('Erro ao copiar relatório.', 'error');
             });
@@ -519,6 +649,11 @@
             state.metaMensal = parseFloat(document.getElementById('metaMensal').value) || 0;
             state.diasUteis = parseInt(document.getElementById('diasUteis').value) || 0;
             state.comissaoPercentual = parseFloat(document.getElementById('comissaoPercentual').value) || 0;
+            state.salarioBase = parseFloat(document.getElementById('salarioBase').value) || 0;
+            state.valorVT = parseFloat(document.getElementById('valorVT').value) || 0;
+            state.valorVA = parseFloat(document.getElementById('valorVA').value) || 0;
+            state.valorMinimoPorCliente = parseFloat(document.getElementById('valorMinimoPorCliente').value) || 0;
+            
             saveState();
             document.getElementById('configModal').classList.add('hidden');
             document.getElementById('configModal').classList.remove('flex');
